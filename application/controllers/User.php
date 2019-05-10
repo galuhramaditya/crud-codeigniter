@@ -21,17 +21,38 @@ class User extends CI_Controller
      */
     public function index()
     {
-        return $this->output->set_output(json_encode($this->user->get_data()));
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($this->user->get_data()));
     }
 
     public function create()
     {
-        $insert = $this->user->insert_data([
+        $this->user->insert_data([
             'username'  => $this->input->post('username'),
             'password'  => $this->input->post('password'),
         ]);
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode("success"));
+    }
 
-        if ($insert) return $this->output->set_output(json_encode("success"));
-        return $this->output->set_output(json_encode('failed'))->set_status_header(401);
+    public function update($id)
+    {
+        $this->user->update_data([
+            'username'  => $this->input->post('username'),
+            'password'  => $this->input->post('password'),
+        ], $id);
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode("success"));
+    }
+
+    public function delete($id)
+    {
+        $this->user->delete_data($id);
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode("success"));
     }
 }
